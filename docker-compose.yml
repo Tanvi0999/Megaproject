@@ -8,7 +8,7 @@ services:
     environment:
       POSTGRES_DB: career_intel
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_PASSWORD: kitcoek
     ports:
       - "5432:5432"
     volumes:
@@ -20,8 +20,15 @@ services:
     restart: unless-stopped
     command: start-dev
     environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      # Tell Keycloak to use the PostgreSQL container instead of memory
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/career_intel
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: kitcoek
+
+      # Updated from your logs to remove the deprecation warnings
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
     ports:
       - "8080:8080"
     depends_on:
