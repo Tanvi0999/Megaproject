@@ -5,6 +5,28 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI(title="Career Intel API")
+
+# Define allowed origins (Add your frontend URL here later, e.g., "http://localhost:3000")
+origins = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:3000"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"], # Allows all HTTP methods (GET, POST, PUT, DELETE)
+    allow_headers=["*"], # Allows all headers (including Authorization for your JWTs)
+)
+
+# --- NEW: Import the Keycloak middleware we built ---
+from backend.app.auth import require_role
+
 from backend.app.database import Base, engine, SessionLocal
 from backend.app import models  # Import all models so SQLAlchemy registers all 15 tables.
 from backend.app.models import (
@@ -46,7 +68,9 @@ def get_db():
     finally:
         db.close()
 
-
+# ---------------------------------------------------------
+# PUBLIC ROUTES (No Token Required)
+# ---------------------------------------------------------
 @app.get("/", tags=["Health"])
 def home():
     return {
@@ -59,11 +83,14 @@ def home():
 def health_check():
     return {"status": "ok"}
 
-
+# ---------------------------------------------------------
+# FACULTY ROUTES (Requires 'faculty' Keycloak Role)
+# ---------------------------------------------------------
 @app.post(
     "/api/students",
     response_model=StudentProfileResponse,
     tags=["Students"],
+    dependencies=[Depends(require_role("faculty"))] # Injected RBAC
 )
 def create_student(
     profile: StudentProfileCreate,
@@ -71,7 +98,6 @@ def create_student(
 ):
     student = Student(**profile.model_dump())
     db.add(student)
-
 
     try:
         db.commit()
@@ -90,17 +116,21 @@ def create_student(
     "/api/students",
     response_model=list[StudentProfileResponse],
     tags=["Students"],
+    dependencies=[Depends(require_role("faculty"))] # Injected RBAC
 )
 def get_students(db: Session = Depends(get_db)):
     return db.scalars(
         select(Student).order_by(Student.student_id)
     ).all()
 
-
+# ---------------------------------------------------------
+# STUDENT ROUTES (Requires 'student' Keycloak Role)
+# ---------------------------------------------------------
 @app.get(
     "/api/students/{student_id}",
     response_model=StudentProfileResponse,
     tags=["Students"],
+    dependencies=[Depends(require_role("student"))] # Injected RBAC
 )
 def get_student(
     student_id: int,
@@ -160,6 +190,7 @@ def build_recommendations(student: Student):
 @app.get(
     "/api/students/{student_id}/recommendations",
     tags=["Career Recommendations"],
+    dependencies=[Depends(require_role("student"))] # Injected RBAC
 )
 def get_career_recommendations(
     student_id: int,
@@ -180,6 +211,7 @@ def get_career_recommendations(
 @app.get(
     "/api/students/{student_id}/skill-gap",
     tags=["Skill Gap Analysis"],
+    dependencies=[Depends(require_role("student"))] # Injected RBAC
 )
 def get_skill_gap(
     student_id: int,
@@ -204,6 +236,7 @@ def get_skill_gap(
 @app.post(
     "/api/v1/recommendations/generate",
     tags=["Career Recommendations"],
+    dependencies=[Depends(require_role("student"))] # Injected RBAC
 )
 def generate_recommendations(
     request: RecommendationGenerateRequest,
@@ -297,5 +330,3 @@ def generate_recommendations(
     except Exception:
         db.rollback()
         raise
-
-
