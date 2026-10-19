@@ -4,6 +4,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
+from backend.app.api.v1.auth import router as auth_router
 
 from backend.app.database import Base, engine, SessionLocal
 from backend.app import models  # Import all models so SQLAlchemy registers all 15 tables.
@@ -37,6 +38,8 @@ app = FastAPI(
     description="Student profiling, career recommendations, and skill-gap analysis API.",
     lifespan=lifespan,
 )
+
+app.include_router(auth_router)
 
 
 def get_db():
