@@ -3,7 +3,7 @@ from typing import Any
 
 from fastapi import APIRouter, Depends
 
-from backend.app.core.dependencies import get_current_token_payload
+from app.core.dependencies import get_current_token_payload
 
 
 router = APIRouter(prefix="/api/v1/auth", tags=["Authentication"])

@@ -2,7 +2,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
-from backend.app.services.attendance_service import (
+from app.services.attendance_service import (
     generate_attendance_predictions,
 )
 

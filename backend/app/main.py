@@ -3,14 +3,14 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from backend.app import models  # Register SQLAlchemy models
-from backend.app.database import Base, engine
-from backend.app.api.v1.auth import router as auth_router
-from backend.app.api.v1.endpoints.students import router as students_router
-from backend.app.api.v1.endpoints.recommendations import (
+from app import models  # Register SQLAlchemy models
+from app.database import Base, engine
+from app.api.v1.auth import router as auth_router
+from app.api.v1.endpoints.students import router as students_router
+from app.api.v1.endpoints.recommendations import (
     router as recommendations_router,
 )
-from backend.app.api.v1.endpoints.attendance import (
+from app.api.v1.endpoints.attendance import (
     router as attendance_router,
 )
 

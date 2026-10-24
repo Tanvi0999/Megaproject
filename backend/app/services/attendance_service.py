@@ -1,7 +1,7 @@
 
 import pandas as pd
 
-from backend.app.services.attendance_predictor import predict_attendance
+from app.services.attendance_predictor import predict_attendance
 
 
 def generate_attendance_predictions(records: list[dict]) -> list[dict]:
