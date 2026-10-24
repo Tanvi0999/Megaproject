@@ -8,7 +8,8 @@ from app.models import (
 fake = Faker()
 
 def seed_database():
-    # Ensure all tables are created based on the updated models
+    # Wipe existing data and recreate fresh tables
+    Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
 
