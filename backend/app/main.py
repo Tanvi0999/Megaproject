@@ -10,7 +10,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Career Intel API")
 
-# Define allowed origins
 origins = [
     "http://localhost:3000",
     "http://localhost:5173",
@@ -26,7 +25,6 @@ app.add_middleware(
 )
 
 from app.auth import require_role
-
 from app.database import Base, engine, SessionLocal
 from app import models
 from app.models import (
@@ -51,7 +49,6 @@ async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
     yield
 
-
 app = FastAPI(
     title="AI-Based Intelligent Student Profiling & Career Recommendation System",
     version="0.1.0",
@@ -61,7 +58,6 @@ app = FastAPI(
 
 app.include_router(auth_router)
 
-
 def get_db():
     db = SessionLocal()
     try:
@@ -69,9 +65,6 @@ def get_db():
     finally:
         db.close()
 
-# ---------------------------------------------------------
-# PUBLIC ROUTES (No Token Required)
-# ---------------------------------------------------------
 @app.get("/", tags=["Health"])
 def home():
     return {
@@ -79,14 +72,10 @@ def home():
         "docs": "/docs",
     }
 
-
 @app.get("/health", tags=["Health"])
 def health_check():
     return {"status": "ok"}
 
-# ---------------------------------------------------------
-# FACULTY ROUTES (Requires 'faculty' Keycloak Role)
-# ---------------------------------------------------------
 @app.post(
     "/api/students",
     response_model=StudentProfileResponse,
@@ -99,7 +88,6 @@ def create_student(
 ):
     student = Student(**profile.model_dump())
     db.add(student)
-
     try:
         db.commit()
         db.refresh(student)
@@ -109,9 +97,7 @@ def create_student(
             status_code=409,
             detail="Email or roll number already exists.",
         )
-
     return student
-
 
 @app.get(
     "/api/students",
@@ -124,9 +110,6 @@ def get_students(db: Session = Depends(get_db)):
         select(Student).order_by(Student.student_id)
     ).all()
 
-# ---------------------------------------------------------
-# STUDENT ROUTES (Requires 'student' Keycloak Role)
-# ---------------------------------------------------------
 @app.get(
     "/api/students/{student_id}",
     response_model=StudentProfileResponse,
@@ -138,12 +121,9 @@ def get_student(
         db: Session = Depends(get_db),
 ):
     student = db.get(Student, student_id)
-
     if student is None:
         raise HTTPException(status_code=404, detail="Student not found.")
-
     return student
-
 
 def build_recommendations(student: Student):
     skills = {
@@ -151,28 +131,20 @@ def build_recommendations(student: Student):
         for skill in (student.skills or [])
         if isinstance(skill, str)
     }
-
     careers = [
         {
             "career": "Data Analyst",
-            "required_skills": {
-                "python", "sql", "statistics", "data visualization"
-            },
+            "required_skills": {"python", "sql", "statistics", "data visualization"},
         },
         {
             "career": "Machine Learning Engineer",
-            "required_skills": {
-                "python", "machine learning", "statistics", "sql"
-            },
+            "required_skills": {"python", "machine learning", "statistics", "sql"},
         },
         {
             "career": "Backend Developer",
-            "required_skills": {
-                "python", "sql", "api development", "git"
-            },
+            "required_skills": {"python", "sql", "api development", "git"},
         },
     ]
-
     results = []
     for career in careers:
         required = career["required_skills"]
@@ -184,9 +156,7 @@ def build_recommendations(student: Student):
             "matched_skills": matched,
             "missing_skills": missing,
         })
-
     return sorted(results, key=lambda item: item["match_percentage"], reverse=True)
-
 
 @app.get(
     "/api/students/{student_id}/recommendations",
@@ -200,14 +170,12 @@ def get_career_recommendations(
     student = db.get(Student, student_id)
     if student is None:
         raise HTTPException(status_code=404, detail="Student not found.")
-
     return {
         "student_id": student.student_id,
         "student_name": student.student_name,
         "recommendations": build_recommendations(student),
         "note": "Initial rule-based prototype; ML integration is pending.",
     }
-
 
 @app.get(
     "/api/students/{student_id}/skill-gap",
@@ -221,7 +189,6 @@ def get_skill_gap(
     student = db.get(Student, student_id)
     if student is None:
         raise HTTPException(status_code=404, detail="Student not found.")
-
     return {
         "student_id": student.student_id,
         "skill_gaps": [
@@ -233,7 +200,6 @@ def get_skill_gap(
         ],
     }
 
-
 @app.post(
     "/api/v1/recommendations/generate",
     tags=["Career Recommendations"],
@@ -244,44 +210,31 @@ def generate_recommendations(
         db: Session = Depends(get_db),
 ):
     student = db.get(Student, request.student_id)
-
     if student is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Student not found.",
-        )
-
+        raise HTTPException(status_code=404, detail="Student not found.")
     ranked_results = build_recommendations(student)[:request.top_k]
-
     recommendation = Recommendation(
         student_id=student.student_id,
         model_name="rule-based-prototype",
         model_version="0.1.0",
         input_snapshot={
             "branch": student.branch,
-            "academic_year": student.academic_year,  # Fixed: changed from type reference `int` to `student.academic_year`
+            "academic_year": student.academic_year,
             "cgpa": student.cgpa,
             "skills": student.skills or [],
             "interests": student.interests or [],
         },
         status="completed",
     )
-
     try:
         db.add(recommendation)
         db.flush()
-
         saved_results = []
-
         for rank, item in enumerate(ranked_results, start=1):
             career = db.scalar(
-                select(Career).where(
-                    Career.career_name == item["career"]
-                )
+                select(Career).where(Career.career_name == item["career"])
             )
-
             score = item["match_percentage"] / 100.0
-
             recommended_career = RecommendedCareer(
                 recommendation_id=recommendation.recommendation_id,
                 career_id=career.career_id if career else None,
@@ -290,25 +243,17 @@ def generate_recommendations(
                 match_score=score,
                 matched_skills=item["matched_skills"],
             )
-
             db.add(recommended_career)
             db.flush()
-
             for missing_skill in item["missing_skills"]:
                 db.add(
                     SkillGap(
-                        recommended_career_id=(
-                            recommended_career.recommended_career_id
-                        ),
+                        recommended_career_id=recommended_career.recommended_career_id,
                         skill_name=missing_skill,
                         priority="medium",
-                        reason=(
-                            "Required skill not found in the "
-                            "student's current profile."
-                        ),
+                        reason="Required skill not found in the student's current profile.",
                     )
                 )
-
             saved_results.append({
                 "career_name": item["career"],
                 "rank": rank,
@@ -316,9 +261,7 @@ def generate_recommendations(
                 "matched_skills": item["matched_skills"],
                 "missing_skills": item["missing_skills"],
             })
-
         db.commit()
-
         return {
             "recommendation_id": recommendation.recommendation_id,
             "student_id": student.student_id,
@@ -326,7 +269,6 @@ def generate_recommendations(
             "model_version": "0.1.0",
             "recommendations": saved_results,
         }
-
     except Exception:
         db.rollback()
         raise
