@@ -4,13 +4,13 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
-from backend.app.api.v1.auth import router as auth_router
+from app.api.v1.auth import router as auth_router
 
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Career Intel API")
 
-# Define allowed origins (Add your frontend URL here later, e.g., "http://localhost:3000")
+# Define allowed origins
 origins = [
     "http://localhost:3000",
     "http://localhost:5173",
@@ -21,16 +21,15 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"], # Allows all HTTP methods (GET, POST, PUT, DELETE)
-    allow_headers=["*"], # Allows all headers (including Authorization for your JWTs)
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# --- NEW: Import the Keycloak middleware we built ---
-from backend.app.auth import require_role
+from app.auth import require_role
 
-from backend.app.database import Base, engine, SessionLocal
-from backend.app import models  # Import all models so SQLAlchemy registers all 15 tables.
-from backend.app.models import (
+from app.database import Base, engine, SessionLocal
+from app import models
+from app.models import (
     Student,
     Career,
     Recommendation,
@@ -38,7 +37,7 @@ from backend.app.models import (
     SkillGap,
 )
 from pydantic import BaseModel, Field
-from backend.app.schemas import (
+from app.schemas import (
     StudentProfileCreate,
     StudentProfileResponse,
 )
@@ -49,7 +48,6 @@ class RecommendationGenerateRequest(BaseModel):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Creates missing tables only; it does not drop or recreate existing tables.
     Base.metadata.create_all(bind=engine)
     yield
 
@@ -93,11 +91,11 @@ def health_check():
     "/api/students",
     response_model=StudentProfileResponse,
     tags=["Students"],
-    dependencies=[Depends(require_role("faculty"))] # Injected RBAC
+    dependencies=[Depends(require_role("faculty"))]
 )
 def create_student(
-    profile: StudentProfileCreate,
-    db: Session = Depends(get_db),
+        profile: StudentProfileCreate,
+        db: Session = Depends(get_db),
 ):
     student = Student(**profile.model_dump())
     db.add(student)
@@ -119,7 +117,7 @@ def create_student(
     "/api/students",
     response_model=list[StudentProfileResponse],
     tags=["Students"],
-    dependencies=[Depends(require_role("faculty"))] # Injected RBAC
+    dependencies=[Depends(require_role("faculty"))]
 )
 def get_students(db: Session = Depends(get_db)):
     return db.scalars(
@@ -133,11 +131,11 @@ def get_students(db: Session = Depends(get_db)):
     "/api/students/{student_id}",
     response_model=StudentProfileResponse,
     tags=["Students"],
-    dependencies=[Depends(require_role("student"))] # Injected RBAC
+    dependencies=[Depends(require_role("student"))]
 )
 def get_student(
-    student_id: int,
-    db: Session = Depends(get_db),
+        student_id: int,
+        db: Session = Depends(get_db),
 ):
     student = db.get(Student, student_id)
 
@@ -193,11 +191,11 @@ def build_recommendations(student: Student):
 @app.get(
     "/api/students/{student_id}/recommendations",
     tags=["Career Recommendations"],
-    dependencies=[Depends(require_role("student"))] # Injected RBAC
+    dependencies=[Depends(require_role("student"))]
 )
 def get_career_recommendations(
-    student_id: int,
-    db: Session = Depends(get_db),
+        student_id: int,
+        db: Session = Depends(get_db),
 ):
     student = db.get(Student, student_id)
     if student is None:
@@ -214,11 +212,11 @@ def get_career_recommendations(
 @app.get(
     "/api/students/{student_id}/skill-gap",
     tags=["Skill Gap Analysis"],
-    dependencies=[Depends(require_role("student"))] # Injected RBAC
+    dependencies=[Depends(require_role("student"))]
 )
 def get_skill_gap(
-    student_id: int,
-    db: Session = Depends(get_db),
+        student_id: int,
+        db: Session = Depends(get_db),
 ):
     student = db.get(Student, student_id)
     if student is None:
@@ -234,16 +232,16 @@ def get_skill_gap(
             for item in build_recommendations(student)
         ],
     }
-    
-    
+
+
 @app.post(
     "/api/v1/recommendations/generate",
     tags=["Career Recommendations"],
-    dependencies=[Depends(require_role("student"))] # Injected RBAC
+    dependencies=[Depends(require_role("student"))]
 )
 def generate_recommendations(
-    request: RecommendationGenerateRequest,
-    db: Session = Depends(get_db),
+        request: RecommendationGenerateRequest,
+        db: Session = Depends(get_db),
 ):
     student = db.get(Student, request.student_id)
 
@@ -253,7 +251,6 @@ def generate_recommendations(
             detail="Student not found.",
         )
 
-    # Temporary provider until the teammate's ML contract is finalized.
     ranked_results = build_recommendations(student)[:request.top_k]
 
     recommendation = Recommendation(
@@ -262,7 +259,7 @@ def generate_recommendations(
         model_version="0.1.0",
         input_snapshot={
             "branch": student.branch,
-            "academic_year": student.academic_year,
+            "academic_year": student.academic_year,  # Fixed: changed from type reference `int` to `student.academic_year`
             "cgpa": student.cgpa,
             "skills": student.skills or [],
             "interests": student.interests or [],
