@@ -45,7 +45,9 @@ app.include_router(recommendations_router)
 # Attendance prediction
 app.include_router(attendance_router)
 
-
+# ---------------------------------------------------------
+# PUBLIC ROUTES (No Token Required)
+# ---------------------------------------------------------
 @app.get("/", tags=["Health"])
 def home():
     return {
