@@ -4,7 +4,7 @@ from typing import Any
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from backend.app.core.security import verify_access_token
+from app.core.security import verify_access_token
 
 
 bearer_scheme = HTTPBearer(auto_error=False)
