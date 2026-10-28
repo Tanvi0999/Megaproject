@@ -1,3 +1,8 @@
+"""Extended SQLAlchemy models for the AI Student Career Recommendation System.
+
+Keep the existing Student model in backend.app.models. This module defines the
+other 14 core tables and references the existing students.student_id integer PK.
+"""
 from datetime import date, datetime
 from typing import Any
 
@@ -16,9 +21,8 @@ from sqlalchemy import (
     func,
 )
 from sqlalchemy.orm import Mapped, mapped_column
-from pydantic import BaseModel, EmailStr, Field
 
-from app.database import Base
+from backend.app.database import Base
 
 
 class Student(Base):
@@ -86,6 +90,13 @@ class AttendanceRecord(Base):
     attendance_percentage: Mapped[float | None] = mapped_column(Float, nullable=True)
     recorded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
+
+    project_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    role: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    start_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    end_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    is_team_project: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
 class Skill(Base):
     __tablename__ = "skills"
@@ -244,21 +255,3 @@ class ImportJob(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
-
-# ==========================================
-# Pydantic Schemas (Fixed `academic_year`)
-# ==========================================
-
-class StudentProfileCreate(BaseModel):
-    student_name: str = Field(min_length=2, max_length=100)
-    email: EmailStr
-    roll_number: str = Field(min_length=1, max_length=30)
-    branch: str = Field(min_length=1, max_length=100)
-    academic_year: int  # Removed the strict le=6 constraint so it correctly handles calendar years like 2026
-    cgpa: float = Field(ge=0, le=10)
-    skills: list[str] = Field(default_factory=list)
-    interests: list[str] = Field(default_factory=list)
-
-
-class StudentProfileResponse(StudentProfileCreate):
-    student_id: int
