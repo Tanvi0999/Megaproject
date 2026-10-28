@@ -1,0 +1,615 @@
+<!DOCTYPE html><html lang="en" style="min-height: 100%; position: relative;"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <title>StudentPath — Teacher Dashboard</title><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"primary-container":"#142b4f","surface-dim":"#cfdaf2","primary":"#001636","error-container":"#ffdad6","outline":"#74777f","on-secondary-fixed":"#191c1e","surface-variant":"#d8e3fb","primary-fixed-dim":"#b2c7f3","primary-fixed":"#d7e2ff","on-secondary-fixed-variant":"#44474a","tertiary-fixed":"#d5e3ff","inverse-on-surface":"#ecf1ff","surface-bright":"#f9f9ff","secondary":"#5b5f61","on-tertiary":"#ffffff","secondary-fixed":"#e0e3e6","on-surface":"#111c2d","surface-tint":"#4a5f85","tertiary-fixed-dim":"#a7c8ff","on-tertiary-fixed-variant":"#004788","on-primary-container":"#7e93bd","secondary-container":"#e0e3e6","surface-container-high":"#dee8ff","inverse-primary":"#b2c7f3","tertiary":"#001733","on-tertiary-container":"#6194de","on-error":"#ffffff","surface-container":"#e7eeff","inverse-surface":"#263143","surface-container-lowest":"#ffffff","on-background":"#111c2d","outline-variant":"#c4c6cf","background":"#f9f9ff","on-error-container":"#93000a","surface":"#f9f9ff","secondary-fixed-dim":"#c4c7ca","tertiary-container":"#002b57","surface-container-highest":"#d8e3fb","on-secondary-container":"#626567","on-primary-fixed-variant":"#32476c","on-surface-variant":"#44474e","on-primary":"#ffffff","error":"#ba1a1a","on-primary-fixed":"#011b3e","on-tertiary-fixed":"#001b3b","surface-container-low":"#f0f3ff","on-secondary":"#ffffff"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"space-xl":"2.5rem","gutter-lg":"2rem","gutter":"1.5rem","margin":"2rem","margin-mobile":"1rem","gutter-sm":"1rem","space-lg":"1.5rem","space-md":"1rem","space-xs":"0.25rem","space-sm":"0.5rem"},"fontFamily":{"body-sm":["Geist"],"label-sm":["Geist"],"headline-sm":["Space Grotesk"],"label-md":["Geist"],"headline-md":["Space Grotesk"],"code-sm":["Space Mono"],"headline-xl":["Space Grotesk"],"body-lg":["Geist"],"headline-lg-mobile":["Space Grotesk"],"headline-lg":["Space Grotesk"],"body-md":["Geist"],"headline-xl-mobile":["Space Grotesk"]},"fontSize":{"body-sm":["12px",{"lineHeight":"18px","letterSpacing":"0.01em","fontWeight":"400"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.05em","fontWeight":"600"}],"headline-sm":["18px",{"lineHeight":"26px","letterSpacing":"-0.01em","fontWeight":"500"}],"label-md":["13px",{"lineHeight":"18px","letterSpacing":"0.02em","fontWeight":"500"}],"headline-md":["24px",{"lineHeight":"32px","letterSpacing":"-0.015em","fontWeight":"500"}],"code-sm":["12px",{"lineHeight":"18px","letterSpacing":"0em","fontWeight":"400"}],"headline-xl":["40px",{"lineHeight":"48px","letterSpacing":"-0.03em","fontWeight":"600"}],"body-lg":["16px",{"lineHeight":"26px","letterSpacing":"0em","fontWeight":"400"}],"headline-lg-mobile":["24px",{"lineHeight":"32px","letterSpacing":"-0.01em","fontWeight":"600"}],"headline-lg":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"600"}],"body-md":["14px",{"lineHeight":"22px","letterSpacing":"0em","fontWeight":"400"}],"headline-xl-mobile":["30px",{"lineHeight":"38px","letterSpacing":"-0.02em","fontWeight":"600"}]}}}}</script></head>
+<body class="bg-surface font-body-md text-body-md text-on-surface antialiased">
+<aside class="fixed left-0 top-0 h-full w-72 bg-primary-container z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+<div class="flex flex-col flex-1 min-h-0">
+<div class="px-gutter pt-gutter-lg pb-gutter">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-[#001733] border border-[#142b4f] flex items-center justify-center shadow-md shrink-0">
+<span class="material-symbols-outlined text-[#38bdf8] text-[22px]">school</span></div>
+<span class="font-headline-sm text-headline-sm text-on-primary tracking-tight font-bold">StudentPath</span></div>
+<p class="mt-space-xs font-label-sm text-label-sm uppercase tracking-wider text-on-primary-container">Intelligent Profiling &amp; <br>Telemetry</p>
+</div>
+<nav class="flex-1 px-space-md space-y-space-xs overflow-y-auto" id="sidebar-nav">
+<a class="nav-link flex items-center gap-space-sm px-space-md py-space-sm rounded-lg transition-all duration-150 bg-surface-container-high text-on-surface font-label-md font-semibold cursor-pointer" data-view="dashboard" href="javascript:void(0)" onclick="navigateToView('dashboard')" aria-current="page"><span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="">Dashboard</span></a>
+<a class="nav-link flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-primary-container hover:bg-tertiary-container hover:text-on-primary transition-all duration-150 cursor-pointer" data-view="attendance-prediction" href="att-pre.html"><span class="material-symbols-outlined text-[20px]">event_upcoming</span><span class="">Attendance Prediction</span></a><a class="nav-link flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-primary-container hover:bg-tertiary-container hover:text-on-primary transition-all duration-150 cursor-pointer" data-view="marks-prediction" href="mark-pre.html" onclick="navigateToView('marks-prediction')"><span class="material-symbols-outlined text-[20px]">query_stats</span><span class="">Marks Prediction</span></a><a class="nav-link flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-primary-container hover:bg-tertiary-container hover:text-on-primary transition-all duration-150 cursor-pointer" data-view="career-recommendation" href="career.html" onclick="navigateToView('career-recommendation')"><span class="material-symbols-outlined text-[20px]">explore</span><span class="">Career Recommendation</span></a><a class="nav-link flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-primary-container hover:bg-tertiary-container hover:text-on-primary transition-all duration-150 cursor-pointer" data-view="student-records" href="std-rec.html" onclick="navigateToView('student-records')"><span class="material-symbols-outlined text-[20px]">school</span><span class="">Student Records</span></a></nav></div><div class="w-full border-t border-[#142b4f]/60 bg-[#091322] px-4 py-3.5"><div class="flex items-center gap-space-sm mb-3"><div class="w-10 h-10 rounded-full bg-[#142b4f] border border-[#142b4f]/60 flex items-center justify-center shrink-0 overflow-hidden shadow-sm"><span class="material-symbols-outlined text-white text-[20px]">person</span></div><div class="flex-1 min-w-0"><p class="font-headline-sm text-[14px] text-white font-bold truncate leading-tight">Authenticated Faculty</p><p class="text-xs text-[#7d93b5] truncate mt-0.5 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-[#38bdf8] inline-block shrink-0"></span><span class="">Session Active</span></p></div></div><div class="flex items-center justify-around pt-2 border-t border-[#142b4f]/40 text-[#7e96b8]"><a class="flex items-center gap-1.5 py-1 px-2.5 rounded-lg font-label-md text-xs text-[#7e96b8] hover:text-white hover:bg-[#142b4f]/40 transition-all cursor-pointer" data-path="settings" href="#"><span class="material-symbols-outlined text-[16px]">settings</span><span class="">Settings</span></a><button class="flex items-center gap-1.5 py-1 px-2.5 rounded-lg font-label-md text-xs text-[#7e96b8] hover:text-white hover:bg-[#142b4f]/40 transition-all cursor-pointer" onclick="logoutTeacher()"><span class="material-symbols-outlined text-[16px]">logout</span><span class="">Logout</span></button></div></div></aside><div class="pl-72">
+<main class="w-full pt-16 bg-surface min-h-screen px-gutter py-gutter pb-space-xl"><!-- VIEW 1: DASHBOARD VIEW --><div class="flex flex-col w-full space-y-gutter-lg pb-space-xl" id="view-dashboard"><!-- Top Banner -->
+<div class="flex flex-col space-y-space-xs">
+<div class="flex items-center gap-space-sm">
+ 
+</div>
+<h1 class="font-headline-lg text-[32px] text-primary font-bold tracking-tight mt-1">Teacher Dashboard</h1>
+ 
+</div>
+<!-- 3 Top Metric Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Card 1: Total Students -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm border border-surface-container-low flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold">TOTAL STUDENTS</span>
+<div class="mt-3">
+<span class="inline-block w-8 h-1 bg-primary rounded"></span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary-container shrink-0">
+<span class="material-symbols-outlined text-[20px]">groups</span>
+</div>
+</div>
+<div class="mt-6 pt-space-sm flex items-center justify-between text-xs text-secondary">
+<span class="flex items-center gap-1.5 font-medium">
+<span class="material-symbols-outlined text-[16px] text-outline">description</span>
+        Awaiting file upload
+      </span>
+<span class="text-outline font-medium">No file connected</span>
+</div>
+</div>
+<!-- Card 2: Attendance Below 75% -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm border border-surface-container-low flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold">ATTENDANCE BELOW 75%</span>
+<div class="mt-3">
+<span class="inline-block w-8 h-1 bg-[#ba1a1a] rounded"></span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-xl bg-[#ffdad6]/60 flex items-center justify-center text-[#ba1a1a] shrink-0">
+<span class="material-symbols-outlined text-[20px]">calendar_today</span>
+</div>
+</div>
+<div class="mt-6 pt-space-sm flex items-center text-xs text-secondary">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container text-[#4a5f85] font-medium">
+<span class="material-symbols-outlined text-[15px]">info</span>
+        Awaiting ingestion
+      </span>
+</div>
+</div>
+<!-- Card 3: Marks Below 40 -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm border border-surface-container-low flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold">MARKS BELOW 40</span>
+<div class="mt-3">
+<span class="inline-block w-8 h-1 bg-[#ba1a1a] rounded"></span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-xl bg-[#ffdad6]/60 flex items-center justify-center text-[#ba1a1a] shrink-0">
+<span class="material-symbols-outlined text-[20px]">error_outline</span>
+</div>
+</div>
+<div class="mt-6 pt-space-sm flex items-center text-xs text-secondary">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container text-[#4a5f85] font-medium">
+<span class="material-symbols-outlined text-[15px]">info</span>
+        No records ingested
+      </span>
+</div>
+</div>
+</div>
+<!-- 2 Upload Cards Side-by-Side -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+<!-- Attendance Data Upload -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm border border-surface-container-low flex flex-col justify-between space-y-space-md">
+<div>
+<!-- Header -->
+<div class="flex items-center gap-space-sm mb-space-md">
+<div class="w-10 h-10 rounded-xl bg-primary-container text-on-primary flex items-center justify-center shadow-sm shrink-0">
+<span class="material-symbols-outlined text-[22px]">table_chart</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary font-bold">Attendance Data Upload</h3>
+<p class="font-body-sm text-body-sm text-secondary">Batch update lecture participation metrics</p>
+</div>
+</div>
+<!-- Schema Match Pill -->
+<div class="bg-surface-container-low border border-surface-container p-2.5 rounded-lg flex items-center gap-2 mb-space-md">
+<span class="material-symbols-outlined text-outline text-[18px] shrink-0">info</span>
+<p class="text-xs text-secondary">
+<span class="font-semibold text-primary">Required Schema (Exact Header Match):</span>
+<span class="font-mono ml-1 text-primary">Roll No | Name | Attendance</span>
+</p>
+</div>
+<!-- Dropzone -->
+<div class="border-2 border-dashed border-surface-container hover:border-primary-container p-space-lg rounded-xl flex flex-col items-center justify-center text-center cursor-pointer transition-colors bg-surface-bright/50" id="attendance-dropzone">
+<div class="w-12 h-12 rounded-xl bg-surface-container text-primary flex items-center justify-center mb-space-sm">
+<span class="material-symbols-outlined text-[26px]">cloud_upload</span>
+</div>
+<p class="font-label-md text-primary font-semibold">Click to browse or drag &amp; drop attendance sheet</p>
+<p class="text-xs text-secondary mt-1">Accepts standard Microsoft Excel (.xlsx, .xls) and CSV datasets</p>
+<input accept=".csv, .xlsx, .xls" class="hidden" id="attendance-file-input" onchange="handleFileSelected('attendance', event)" type="file">
+</div>
+<!-- File status info -->
+<div class="mt-space-md p-space-sm bg-surface-container-low rounded-lg flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-[18px]">description</span>
+<div>
+<p class="font-medium text-primary" id="attendance-filename">No attendance file chosen</p>
+<p class="text-[11px] text-secondary" id="attendance-file-meta">Awaiting roster upload</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Primary Button -->
+<div class="pt-space-xs">
+<button class="w-full flex items-center justify-center gap-2 py-2.5 px-space-md rounded-lg bg-primary text-on-primary font-label-md font-semibold hover:bg-primary-container transition-all shadow-sm" onclick="processUploadTrigger('attendance')" type="button">
+<span class="material-symbols-outlined text-[18px]">upload</span>
+<span class="">Upload Attendance Data</span>
+</button>
+</div>
+</div>
+<!-- Marks Data Upload -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm border border-surface-container-low flex flex-col justify-between space-y-space-md">
+<div>
+<!-- Header -->
+<div class="flex items-center gap-space-sm mb-space-md">
+<div class="w-10 h-10 rounded-xl bg-primary-container text-on-primary flex items-center justify-center shadow-sm shrink-0">
+<span class="material-symbols-outlined text-[22px]">receipt_long</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary font-bold">Marks Data Upload</h3>
+<p class="font-body-sm text-body-sm text-secondary">Ingest internal evaluation &amp; mid-term assessments</p>
+</div>
+</div>
+<!-- Schema Match Pill -->
+<div class="bg-surface-container-low border border-surface-container p-2.5 rounded-lg flex items-center gap-2 mb-space-md">
+<span class="material-symbols-outlined text-outline text-[18px] shrink-0">info</span>
+<p class="text-xs text-secondary">
+<span class="font-semibold text-primary">Required Schema (Exact Header Match):</span>
+<span class="font-mono ml-1 text-primary">Roll No | Name | Marks</span>
+</p>
+</div>
+<!-- Dropzone -->
+<div class="border-2 border-dashed border-surface-container hover:border-primary-container p-space-lg rounded-xl flex flex-col items-center justify-center text-center cursor-pointer transition-colors bg-surface-bright/50" id="marks-dropzone">
+<div class="w-12 h-12 rounded-xl bg-surface-container text-primary flex items-center justify-center mb-space-sm">
+<span class="material-symbols-outlined text-[26px]">description</span>
+</div>
+<p class="font-label-md text-primary font-semibold">Click to browse or drag &amp; drop assessment sheet</p>
+<p class="text-xs text-secondary mt-1">Accepts standard Microsoft Excel (.xlsx, .xls) and CSV datasets</p>
+<input accept=".csv, .xlsx, .xls" class="hidden" id="marks-file-input" onchange="handleFileSelected('marks', event)" type="file">
+</div>
+<!-- File status info -->
+<div class="mt-space-md p-space-sm bg-surface-container-low rounded-lg flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-[18px]">description</span>
+<div>
+<p class="font-medium text-primary" id="marks-filename">No marks file chosen</p>
+<p class="text-[11px] text-secondary" id="marks-file-meta">Awaiting scores upload</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Primary Button -->
+<div class="pt-space-xs">
+<button class="w-full flex items-center justify-center gap-2 py-2.5 px-space-md rounded-lg bg-primary text-on-primary font-label-md font-semibold hover:bg-primary-container transition-all shadow-sm" onclick="processUploadTrigger('marks')" type="button">
+<span class="material-symbols-outlined text-[18px]">upload</span>
+<span class="">Upload Marks Data</span>
+</button>
+</div>
+</div>
+</div>
+<!-- 2 Analytics Cards Side-by-Side -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+<!-- Attendance Analytics -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm border border-surface-container-low flex flex-col justify-between">
+<div class="flex items-center justify-between pb-2 border-b border-surface-container-low">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[20px]">bar_chart</span>
+<h3 class="font-headline-sm text-headline-sm text-primary font-semibold">Attendance Analytics</h3>
+</div>
+ 
+</div>
+<div class="py-12 flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-outline text-[36px] mb-2">ssid_chart</span>
+<p class="font-label-md text-primary font-semibold">Upload data to generate distribution</p>
+<p class="text-xs text-secondary mt-1 max-w-sm">Ingest attendance sheet above to compute lecture telemetry trends.</p>
+</div>
+</div>
+<!-- Marks Analytics -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm border border-surface-container-low flex flex-col justify-between">
+<div class="flex items-center justify-between pb-2 border-b border-surface-container-low">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[20px]">analytics</span>
+<h3 class="font-headline-sm text-headline-sm text-primary font-semibold">Marks Analytics</h3>
+</div>
+ 
+</div>
+<div class="py-12 flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-outline text-[36px] mb-2">equalizer</span>
+<p class="font-label-md text-primary font-semibold">Upload data to generate distribution</p>
+<p class="text-xs text-secondary mt-1 max-w-sm">Ingest marks spreadsheet above to inspect passing trends.</p>
+</div>
+</div>
+</div></div><!-- VIEW 2: ATTENDANCE PREDICTION VIEW -->
+<!-- Individual Student Inspection Drawer / Modal (Fixed Overlay) -->
+<div class="fixed inset-0 z-50 overflow-hidden hidden transition-all duration-300" id="student-drawer">
+<!-- Backdrop -->
+<div class="absolute inset-0 bg-primary/40 backdrop-blur-sm transition-opacity" onclick="closeStudentDrawer()"></div>
+<!-- Sliding Panel -->
+<div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+<div class="w-screen max-w-xl bg-surface-container-lowest shadow-2xl flex flex-col justify-between">
+<!-- Drawer Header -->
+<div class="p-space-lg bg-surface-container-low flex flex-col space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded text-xs font-mono font-semibold bg-primary-container text-on-primary" id="drawer-roll">—</span>
+<button class="p-1 rounded-lg hover:bg-surface-container text-secondary hover:text-primary transition-all" onclick="closeStudentDrawer()">
+<span class="material-symbols-outlined text-[24px]">close</span>
+</button>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-primary font-bold" id="drawer-name">Student Details</h2>
+<p class="font-body-sm text-body-sm text-secondary" id="drawer-dept-subtitle">Department of Computer Engineering</p>
+</div>
+<div class="flex items-center gap-space-sm pt-1">
+<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-surface-container text-primary" id="drawer-status-pill">Awaiting Ingestion</span>
+<span class="text-xs text-secondary flex items-center gap-1 font-mono">
+<span class="material-symbols-outlined text-[14px] text-surface-tint">check_circle</span>
+              Roster Telemetry Synchronized
+            </span>
+</div>
+<!-- Drawer Navigation Tabs -->
+<div class="flex gap-space-xs pt-space-xs border-b border-surface-container">
+<button class="px-space-md py-space-xs font-label-md text-label-md border-b-2 border-primary-container text-primary font-semibold transition-all" id="tab-btn-att" onclick="switchDrawerTab('attendance')">Attendance</button>
+<button class="px-space-md py-space-xs font-label-md text-label-md text-secondary hover:text-primary transition-all" id="tab-btn-mrk" onclick="switchDrawerTab('marks')">Marks Analytics</button>
+<button class="px-space-md py-space-xs font-label-md text-label-md text-secondary hover:text-primary transition-all" id="tab-btn-car" onclick="switchDrawerTab('career')">Career Vector</button>
+</div>
+</div>
+<!-- Drawer Content Tabs -->
+<div class="p-space-lg overflow-y-auto flex-1 space-y-space-md">
+<!-- TAB 1: ATTENDANCE -->
+<div class="space-y-space-md" id="drawer-tab-att">
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="p-space-md bg-surface-container-low rounded-xl">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Current Attendance</span>
+<p class="font-headline-md text-headline-md text-primary font-bold mt-1" id="drawer-curr-att">—</p>
+<span class="font-body-sm text-body-sm text-secondary" id="drawer-att-sub">Calculated from verified log</span>
+</div>
+<div class="p-space-md bg-surface-container-low rounded-xl">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Predicted End-Term</span>
+<p class="font-headline-md text-headline-md text-primary font-bold mt-1" id="drawer-pred-att">—</p>
+<span class="font-body-sm text-body-sm text-surface-tint" id="drawer-att-gain">ML Model Projection</span>
+</div>
+</div>
+<!-- Condonation Alert Banner (Hidden unless < 75%) -->
+<div class="p-space-md bg-error-container/60 rounded-xl flex items-start gap-space-sm hidden" id="drawer-condonation-alert">
+<span class="material-symbols-outlined text-error text-[20px] shrink-0 mt-0.5">report_problem</span>
+<div class="text-error">
+<p class="font-label-md text-label-md font-semibold">Condonation Notice Threshold Triggered</p>
+<p class="font-body-sm text-body-sm">Student attendance is under the statutory 75% boundary. Issue formal warning or submit medical justification.</p>
+</div>
+</div>
+<!-- Mini Attendance Breakdown -->
+<div class="space-y-space-xs">
+<p class="font-label-md text-label-md text-primary font-semibold">Telemetry Participation Breakdown</p>
+<div class="space-y-space-xs text-xs">
+<div class="p-2.5 bg-surface-container rounded-lg flex items-center justify-between">
+<span class="font-medium text-primary">Core Subject Lectures</span>
+<span class="font-mono text-primary font-semibold" id="drawer-detail-sub1">Verified</span>
+</div>
+<div class="p-2.5 bg-surface-container rounded-lg flex items-center justify-between">
+<span class="font-medium text-primary">Lab &amp; Practical Sessions</span>
+<span class="font-mono text-primary font-semibold" id="drawer-detail-sub2">Verified</span>
+</div>
+</div>
+</div>
+</div>
+<!-- TAB 2: MARKS -->
+<div class="space-y-space-md hidden" id="drawer-tab-mrk">
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="p-space-md bg-surface-container-low rounded-xl">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Evaluation Actual</span>
+<p class="font-headline-md text-headline-md text-primary font-bold mt-1" id="drawer-curr-mrk">—</p>
+<span class="font-body-sm text-body-sm text-secondary">Normalized Academic Grade</span>
+</div>
+<div class="p-space-md bg-surface-container-low rounded-xl">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Predicted Final Exam</span>
+<p class="font-headline-md text-headline-md text-primary font-bold mt-1" id="drawer-pred-mrk">—</p>
+<span class="font-body-sm text-body-sm text-surface-tint">Model Confidence</span>
+</div>
+</div>
+<!-- Subject Performance Bars -->
+<div class="space-y-space-sm">
+<p class="font-label-md text-label-md text-primary font-semibold">Evaluation Trajectory</p>
+<div class="space-y-1">
+<div class="flex justify-between text-xs">
+<span class="text-primary font-medium">Internal Normalized Score</span>
+<span class="font-mono font-semibold text-primary" id="drawer-perf-score">—</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-2">
+<div class="bg-primary-container h-2 rounded-full" id="drawer-perf-bar" style="width: 0%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- TAB 3: CAREER RECOMMENDATION -->
+<div class="space-y-space-md hidden" id="drawer-tab-car">
+<div class="p-space-md bg-surface-container-low rounded-xl border border-surface-container">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Primary AI Recommendation</span>
+<p class="font-headline-sm text-headline-sm text-primary font-bold mt-1" id="drawer-career-role">Software Systems Engineer</p>
+<div class="mt-space-xs flex items-center justify-between text-xs">
+<span class="text-secondary">Suitability Index</span>
+<span class="font-mono font-bold text-primary" id="drawer-career-score">80% Match</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-2 mt-1">
+<div class="bg-primary-container h-2 rounded-full" id="drawer-career-bar" style="width: 80%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Drawer Action Footer -->
+<div class="p-space-lg bg-surface-container-low flex items-center justify-between">
+<button class="px-space-md py-space-xs bg-surface text-secondary hover:text-primary rounded-lg font-label-md text-label-md transition-all" onclick="closeStudentDrawer()">Close</button>
+<button class="flex items-center gap-space-xs px-space-md py-space-xs bg-primary-container text-on-primary rounded-lg font-label-md text-label-md hover:bg-tertiary-container transition-all" onclick="printStudentReport()">
+<span class="material-symbols-outlined text-[18px]">print</span>
+<span class="">Print Student Dossier</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main></div>
+<script>
+  // =============================================================
+  // 1. TEACHER AUTH CONTEXT & NAVIGATION ROUTING
+  // =============================================================
+  let currentActiveView = 'attendance-prediction';
+ 
+  function initTeacherAuth() {
+    let teacher = null;
+    try {
+      const stored = sessionStorage.getItem('currentUser') ||
+                     sessionStorage.getItem('studentpath_teacher') ||
+                     localStorage.getItem('currentUser') ||
+                     localStorage.getItem('studentpath_teacher') ||
+                     sessionStorage.getItem('teacher_name') ||
+                     localStorage.getItem('teacher_name');
+      if (stored) {
+        if (stored.startsWith('{')) {
+          teacher = JSON.parse(stored);
+        } else {
+          teacher = { name: stored, role: 'Faculty Member', department: 'Comp. Engg' };
+        }
+      }
+    } catch (e) {
+      console.warn('Auth parsing error:', e);
+    }
+ 
+    if (!teacher || typeof teacher !== 'object') {
+      teacher = {
+        name: 'Faculty Member',
+        role: 'Assistant Professor',
+        department: 'Comp. Engg',
+        cohort: 'Fall 2024 / Sem VI'
+      };
+    }
+ 
+    const displayName = teacher.name || teacher.username || 'Faculty Member';
+    const dept = teacher.department || teacher.dept || 'Computer Engineering';
+    const role = teacher.role || 'Assistant Professor';
+ 
+    const sideNameEl = document.getElementById('sidebar-teacher-name');
+    const sideDeptEl = document.getElementById('sidebar-teacher-dept');
+    if (sideNameEl) sideNameEl.textContent = displayName;
+    if (sideDeptEl) sideDeptEl.textContent = `${role} • ${dept}`;
+ 
+    const headNameEl = document.getElementById('header-teacher-name');
+    const headRoleEl = document.getElementById('header-teacher-role');
+    const headAvatarEl = document.getElementById('header-avatar-initials');
+    if (headNameEl) headNameEl.textContent = displayName;
+    if (headRoleEl) headRoleEl.textContent = `${role} • ${dept}`;
+    if (headAvatarEl) {
+      const parts = displayName.replace(/^Prof\.?\s*|^Dr\.?\s*/i, '').trim().split(' ');
+      const initials = (parts[0] ? parts[0][0] : 'F') + (parts[1] ? parts[1][0] : 'M');
+      headAvatarEl.textContent = initials.toUpperCase();
+    }
+  }
+ 
+  function navigateToView(viewName) {
+    currentActiveView = viewName;
+    const viewDashboard = document.getElementById('view-dashboard');
+    const viewAttPred = document.getElementById('view-attendance-prediction');
+    const headerTitle = document.getElementById('header-page-title');
+ 
+    // Update nav links styling
+    const navLinks = document.querySelectorAll('#sidebar-nav .nav-link');
+    navLinks.forEach(link => {
+      const linkView = link.getAttribute('data-view');
+      if (linkView === viewName) {
+        link.className = 'nav-link flex items-center gap-space-sm px-space-md py-space-sm rounded-lg transition-all duration-150 bg-surface-container-high text-on-surface font-label-md font-semibold cursor-pointer';
+        link.setAttribute('aria-current', 'page');
+      } else {
+        link.className = 'nav-link flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-primary-container hover:bg-tertiary-container hover:text-on-primary transition-all duration-150 cursor-pointer';
+        link.removeAttribute('aria-current');
+      }
+    });
+ 
+    if (viewName === 'attendance-prediction') {
+      if (viewDashboard) viewDashboard.classList.add('hidden');
+      if (viewAttPred) viewAttPred.classList.remove('hidden');
+      if (headerTitle) headerTitle.textContent = 'Attendance Prediction Engine';
+    } else {
+      if (viewAttPred) viewAttPred.classList.add('hidden');
+      if (viewDashboard) viewDashboard.classList.remove('hidden');
+      if (headerTitle) headerTitle.textContent = 'Teacher Dashboard';
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+ 
+function logoutTeacher() {
+    try {
+        sessionStorage.clear();
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('studentpath_teacher');
+        localStorage.removeItem('teacher_name');
+    } catch (e) {
+        console.error('Error clearing logout data:', e);
+    }
+
+    window.location.href = 'logout.html';
+}
+ 
+  // =============================================================
+  // 2. DATA STORE (Clean State: Zero Fake Records)
+  // =============================================================
+  let uploadedStudents = [];
+  let attendanceFileUploaded = false;
+  let marksFileUploaded = false;
+  let stagedFiles = { attendance: null, marks: null };
+  let activeDatasetName = null;
+ 
+  function parseCSV(text) {
+    const lines = text.trim().split(/\r\n|\n/).filter(l => l.trim().length > 0);
+    if (lines.length === 0) return [];
+    const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+    const rows = [];
+    for (let i = 1; i < lines.length; i++) {
+      const parts = lines[i].split(',').map(p => p.trim().replace(/^"|"$/g, ''));
+      const row = {};
+      headers.forEach((h, idx) => {
+        row[h] = parts[idx] || '';
+      });
+      rows.push(row);
+    }
+    return rows;
+  }
+ 
+  function recalculateMetrics() {
+    const total = uploadedStudents.length;
+ 
+    const totalEl = document.getElementById('metric-total-students');
+    const ingestStatusEl = document.getElementById('metric-ingest-status');
+    const sourceEl = document.getElementById('metric-total-source');
+ 
+    const attBelowEl = document.getElementById('metric-att-below');
+    const attBadge = document.getElementById('metric-att-badge');
+    const attBadgeText = document.getElementById('metric-att-badge-text');
+ 
+    const marksBelowEl = document.getElementById('metric-marks-below');
+    const marksBadge = document.getElementById('metric-marks-badge');
+    const marksBadgeText = document.getElementById('metric-marks-badge-text');
+ 
+    const clearBtn = document.getElementById('btn-clear-data');
+    const engineText = document.getElementById('engine-status-text');
+ 
+    if (total === 0) {
+      if (totalEl) totalEl.textContent = '—';
+      if (ingestStatusEl) ingestStatusEl.innerHTML = `<span class="material-symbols-outlined text-[16px] text-outline">hourglass_empty</span> Awaiting file upload`;
+      if (sourceEl) sourceEl.textContent = 'No file connected';
+ 
+      if (attBelowEl) attBelowEl.textContent = '—';
+      if (attBadge) attBadge.className = 'inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary bg-surface-container px-2 py-0.5 rounded';
+      if (attBadgeText) attBadgeText.textContent = 'Awaiting Ingestion';
+ 
+      if (marksBelowEl) marksBelowEl.textContent = '—';
+      if (marksBadge) marksBadge.className = 'inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary bg-surface-container px-2 py-0.5 rounded';
+      if (marksBadgeText) marksBadgeText.textContent = 'No records ingested';
+ 
+      if (engineText) engineText.textContent = 'Ingestion Engine Ready';
+      if (clearBtn) clearBtn.classList.add('hidden');
+      return;
+    }
+ 
+    if (clearBtn) clearBtn.classList.remove('hidden');
+    if (engineText) engineText.textContent = `Telemetry Active • ${total} Ingested`;
+ 
+    const attBelowCount = uploadedStudents.filter(s => s.currAtt !== null && s.currAtt < 75.0).length;
+    const marksBelowCount = uploadedStudents.filter(s => s.currMrk !== null && s.currMrk < 40.0).length;
+    const pad = n => (n < 10 ? '0' + n : '' + n);
+ 
+    if (totalEl) totalEl.textContent = total;
+    if (ingestStatusEl) ingestStatusEl.innerHTML = `<span class="material-symbols-outlined text-[16px] text-surface-tint">check_circle</span> 100% Ingested`;
+    if (sourceEl) sourceEl.textContent = activeDatasetName || 'Uploaded_Dataset.xlsx';
+ 
+    if (attBelowEl) attBelowEl.textContent = pad(attBelowCount);
+    if (marksBelowEl) marksBelowEl.textContent = pad(marksBelowCount);
+  }
+ 
+  function handleHeaderSearch(query) {
+    const searchInput = document.getElementById('ml-table-search-input');
+    if (searchInput) searchInput.value = query;
+    if (window.renderMLPredictionTable) window.renderMLPredictionTable();
+  }
+ 
+  function closeStudentDrawer() {
+    document.getElementById('student-drawer').classList.add('hidden');
+  }
+ 
+  function switchDrawerTab(tabName) {
+    const tabAtt = document.getElementById('drawer-tab-att');
+    const tabMrk = document.getElementById('drawer-tab-mrk');
+    const tabCar = document.getElementById('drawer-tab-car');
+ 
+    const btnAtt = document.getElementById('tab-btn-att');
+    const btnMrk = document.getElementById('tab-btn-mrk');
+    const btnCar = document.getElementById('tab-btn-car');
+ 
+    tabAtt.classList.add('hidden');
+    tabMrk.classList.add('hidden');
+    tabCar.classList.add('hidden');
+ 
+    btnAtt.className = "px-space-md py-space-xs font-label-md text-label-md text-secondary hover:text-primary transition-all";
+    btnMrk.className = "px-space-md py-space-xs font-label-md text-label-md text-secondary hover:text-primary transition-all";
+    btnCar.className = "px-space-md py-space-xs font-label-md text-label-md text-secondary hover:text-primary transition-all";
+ 
+    if (tabName === 'attendance') {
+      tabAtt.classList.remove('hidden');
+      btnAtt.className = "px-space-md py-space-xs font-label-md text-label-md border-b-2 border-primary-container text-primary font-semibold transition-all";
+    } else if (tabName === 'marks') {
+      tabMrk.classList.remove('hidden');
+      btnMrk.className = "px-space-md py-space-xs font-label-md text-label-md border-b-2 border-primary-container text-primary font-semibold transition-all";
+    } else if (tabName === 'career') {
+      tabCar.classList.remove('hidden');
+      btnCar.className = "px-space-md py-space-xs font-label-md text-label-md border-b-2 border-primary-container text-primary font-semibold transition-all";
+    }
+  }
+ 
+  function printStudentReport() {
+    window.print();
+  }
+ 
+  // File dropzone handlers for Dashboard tab
+  document.getElementById('attendance-dropzone')?.addEventListener('click', () => {
+    document.getElementById('attendance-file-input').click();
+  });
+  document.getElementById('marks-dropzone')?.addEventListener('click', () => {
+    document.getElementById('marks-file-input').click();
+  });
+ 
+  function handleFileSelected(type, event) {
+    const file = event.target.files[0];
+    if (file) {
+      stagedFiles[type] = file;
+      const sizeKb = (file.size / 1024).toFixed(1);
+      if (type === 'attendance') {
+        document.getElementById('attendance-filename').innerText = file.name;
+        document.getElementById('attendance-file-meta').innerText = `${sizeKb} KB • Ready to Ingest`;
+      } else {
+        document.getElementById('marks-filename').innerText = file.name;
+        document.getElementById('marks-file-meta').innerText = `${sizeKb} KB • Ready to Ingest`;
+      }
+    }
+  }
+ 
+  function processUploadTrigger(type) {
+    if (!stagedFiles[type]) {
+      document.getElementById(type === 'attendance' ? 'attendance-file-input' : 'marks-file-input').click();
+      return;
+    }
+  }
+ 
+  document.addEventListener('DOMContentLoaded', () => {
+    initTeacherAuth();
+    recalculateMetrics();
+  });
+</script>
+
+
+
+
+
+
+
+</body></html>
