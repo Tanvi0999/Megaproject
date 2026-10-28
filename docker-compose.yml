@@ -22,7 +22,7 @@ services:
     environment:
       # Tell Keycloak to use the PostgreSQL container instead of memory
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://career_db:5432/career_intel
+      KC_DB_URL: jdbc:postgresql://postgres:5432/career_intel
       KC_DB_USERNAME: postgres
       KC_DB_PASSWORD: kitcoek
 
