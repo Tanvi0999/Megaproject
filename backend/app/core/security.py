@@ -6,7 +6,7 @@ import jwt
 from fastapi import HTTPException, status
 from jwt import PyJWKClient, PyJWTError
 
-from backend.app.core.config import auth_settings
+from app.core.config import auth_settings
 
 
 @lru_cache(maxsize=1)
