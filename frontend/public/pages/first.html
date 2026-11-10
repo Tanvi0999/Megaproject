@@ -1,0 +1,631 @@
+<!DOCTYPE html><html lang="en" class="scroll-smooth" style=""><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudentPath Student Profiling &amp; Career Recommendation</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  
+  <!-- Google Material Symbols -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              navy: '#142B4F',
+              navyDark: '#0B1B33',
+              navyLight: '#1E3B66',
+              grey: '#F3F5F8',
+              softBlue: '#4F83CC',
+              softBlueLight: '#EEF4FC',
+              charcoal: '#1E293B',
+              slate: '#64748B',
+              border: '#E2E8F0',
+              emerald: '#10B981',
+              amber: '#F59E0B'
+            }
+          },
+          fontFamily: {
+            heading: ['Space Grotesk', 'sans-serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
+          boxShadow: {
+            subtle: '0 4px 20px -2px rgba(20, 43, 79, 0.06)',
+            card: '0 10px 30px -5px rgba(20, 43, 79, 0.08)',
+            float: '0 20px 40px -10px rgba(20, 43, 79, 0.12)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom styling for sleek UI details */
+    .bg-grid-pattern {
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(20, 43, 79, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(20, 43, 79, 0.04) 1px, transparent 1px);
+    }
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.025em;
+    }
+    /* Material symbols sizing helper */
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+    }
+    .fill-icon {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+</head>
+<body class="bg-white text-brand-charcoal font-sans antialiased selection:bg-brand-softBlue selection:text-white">
+
+  <!-- ==================== 1. STICKY NAVBAR ==================== -->
+  <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-brand-border transition-all duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Logo -->
+        <a href="#home" class="flex items-center gap-3 group">
+          <div class="w-10 h-10 rounded-xl bg-brand-navy flex items-center justify-center text-white shadow-md group-hover:bg-brand-navyLight transition-colors">
+            <span class="material-symbols-outlined text-2xl text-brand-softBlue">school</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-heading font-bold text-xl tracking-tight text-brand-navy flex items-center gap-1">
+              StudentPath
+            </span>
+            <span class="text-[10px] uppercase font-semibold tracking-wider text-brand-slate -mt-1">
+              Academic &amp; Career Telemetry
+            </span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-brand-charcoal">
+          <a href="#home" class="text-brand-navy font-semibold hover:text-brand-softBlue transition-colors">Home</a>
+          <a href="#features" class="text-brand-slate hover:text-brand-navy transition-colors">Features</a>
+          <a href="#how-it-works" class="text-brand-slate hover:text-brand-navy transition-colors">How It Works</a>
+          <a href="#contact" class="text-brand-slate hover:text-brand-navy transition-colors">Contact</a>
+        </nav>
+
+        <!-- Action Buttons -->
+        <div class="hidden sm:flex items-center gap-3">
+          <button class="px-4 py-2 text-sm font-semibold text-brand-navy hover:text-brand-softBlue transition-colors rounded-lg">
+            <a href="loginpage.html">Sign In</a>
+          </button>
+          <a href="#cta" class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-white bg-brand-navy hover:bg-brand-navyLight active:scale-[0.98] rounded-lg shadow-sm transition-all">
+            Get Started
+            <span class="material-symbols-outlined text-sm ml-1">arrow_forward</span>
+          </a>
+        </div>
+
+        <!-- Mobile Menu Toggle Button -->
+        <div class="flex md:hidden">
+          <button id="mobile-menu-btn" aria-label="Toggle Navigation Menu" class="p-2 rounded-lg text-brand-slate hover:text-brand-navy hover:bg-brand-grey focus:outline-none">
+            <span class="material-symbols-outlined text-2xl" id="menu-icon">menu</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Navigation -->
+    <div id="mobile-menu" class="hidden md:hidden border-b border-brand-border bg-white px-4 pt-2 pb-6 space-y-3">
+      <div class="flex flex-col space-y-2 text-base font-medium">
+        <a href="#home" class="px-3 py-2 rounded-md text-brand-navy font-semibold hover:bg-brand-grey">Home</a>
+        <a href="#features" class="px-3 py-2 rounded-md text-brand-slate hover:text-brand-navy hover:bg-brand-grey">Features</a>
+        <a href="#how-it-works" class="px-3 py-2 rounded-md text-brand-slate hover:text-brand-navy hover:bg-brand-grey">How It Works</a>
+        <a href="#contact" class="px-3 py-2 rounded-md text-brand-slate hover:text-brand-navy hover:bg-brand-grey">Contact</a>
+      </div>
+      <div class="pt-4 border-t border-brand-border flex flex-col gap-2">
+        <button class="w-full py-2.5 text-center text-sm font-semibold text-brand-navy border border-brand-border rounded-lg hover:bg-brand-grey">
+          Sign In
+        </button>
+        <a href="#cta" class="w-full py-2.5 text-center text-sm font-semibold text-white bg-brand-navy rounded-lg hover:bg-brand-navyLight">
+          Get Started
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ==================== 2. HERO / INTRODUCTION SECTION ==================== -->
+    <section id="home" class="relative pt-12 pb-20 md:pt-20 md:pb-32 overflow-hidden bg-gradient-to-b from-brand-grey/40 via-white to-white">
+      <!-- Subtle Academic Grid Background Accent -->
+      <div class="absolute inset-0 bg-grid-pattern opacity-60 pointer-events-none"></div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          
+          <!-- Left Column: Copy & Actions -->
+          <div class="lg:col-span-6 flex flex-col items-start text-left">
+            
+            <!-- Category Tag -->
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-softBlueLight border border-brand-softBlue/30 text-brand-navy text-xs font-semibold tracking-wider uppercase mb-6 shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-brand-softBlue animate-pulse"></span>
+              SMARTER CAREER PLANNING STARTS HERE
+            </div>
+
+            <!-- Main Heading -->
+            <h1 class="font-heading text-4xl sm:text-5xl lg:text-5xl font-bold tracking-tight text-brand-navy leading-[1.15] mb-6">
+              Discover Your Strengths. <br class="hidden sm:inline">
+              <span class="text-brand-softBlue">Find Your Career Direction.</span>
+            </h1>
+
+            <!-- Supporting Description -->
+            <p class="text-base sm:text-lg text-brand-slate leading-relaxed mb-8 max-w-xl">
+              Turn your academic performance, technical skills, projects, and achievements into meaningful career insights. Explore suitable career paths, understand your skill gaps, and take practical steps toward your professional goals.
+            </p>
+
+            <!-- Buttons -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mb-10">
+              <a href="#cta" class="inline-flex items-center justify-center px-7 py-3.5 text-base font-semibold text-white bg-brand-navy hover:bg-brand-navyLight active:scale-[0.98] rounded-xl shadow-card transition-all">
+                Get Started
+                <span class="material-symbols-outlined text-lg ml-2">arrow_forward</span>
+              </a>
+              <a href="#features" class="inline-flex items-center justify-center px-7 py-3.5 text-base font-semibold text-brand-navy bg-white hover:bg-brand-grey border border-brand-border active:scale-[0.98] rounded-xl transition-all">
+                Explore Features
+              </a>
+            </div>
+
+            
+
+          </div>
+
+          <!-- Right Column: Interactive Dashboard-Style Product Illustration -->
+          <div class="lg:col-span-6 relative">
+            <div class="relative mx-auto max-w-md lg:max-w-none">
+              
+              <!-- Ambient Subtle Backdrops -->
+              <div class="absolute -top-6 -right-6 w-72 h-72 bg-brand-softBlue/15 rounded-full blur-3xl pointer-events-none"></div>
+              <div class="absolute -bottom-8 -left-8 w-64 h-64 bg-brand-navy/5 rounded-full blur-2xl pointer-events-none"></div>
+
+              <!-- Main Dashboard Card -->
+              <div class="relative bg-white rounded-3xl border border-brand-border/80 shadow-float overflow-hidden group">
+  <!-- Image Wrapper with Subtle Top Header Pill -->
+  <div class="relative overflow-hidden aspect-[4/3] w-full">
+    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUdqObDjrkihbmDQVAvCPRfH3ee2eXO1Bt7lmdj601fKoxTCIWc0Q-MCsCNiIz-Vz_Nodr1jtPBbMhPAqi_cFRGepcHTqHw-lovVUM33mYRr0xsHVC6yv_ffyCwpfYMkppQSIcwx0kyQztx-QvDgRAoIcL_xWFaBRydf_zt3S7vwE3g4twDrSEtYBdG0zhpEq5gNFZ5_w6nrCiwIKINlTq2pai71aZpc9kIXAVc0Ntfi_3Byfbzxnx" alt="Student working on laptop in modern campus library" class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500 ease-out">
+    <div class="absolute inset-0 bg-gradient-to-t from-brand-navy/80 via-brand-navy/20 to-transparent pointer-events-none"></div>
+    
+    <!-- Top Badge Pill inside photo -->
+    <div class="absolute top-4 left-4 z-10">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-md border border-white/20 text-brand-navy text-xs font-semibold shadow-md">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="">Active Student Workspace</span>
+      </div>
+    </div>
+    
+    <!-- Bottom Floating Telemetry Overlay inside photo frame -->
+    <div class="absolute bottom-4 left-4 right-4 z-10">
+      <div class="p-4 rounded-2xl bg-brand-navyDark/90 backdrop-blur-md border border-white/15 text-white shadow-xl flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-10 h-10 rounded-xl bg-brand-softBlue/20 text-brand-softBlue border border-brand-softBlue/30 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-xl">psychology</span>
+          </div>
+          <div class="min-w-0">
+            <div class="text-xs font-bold text-white font-heading truncate"> Career &amp; Academic Telemetry</div>
+            <div class="text-[11px] text-slate-300 truncate">Student-Centric Intelligence &amp; Competency Mapping</div>
+          </div>
+        </div>
+        <div class="hidden sm:flex items-center shrink-0">
+          <span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-400/30 text-[10px] font-mono font-semibold uppercase tracking-wide">Synchronized</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Clean Status Bar -->
+  <div class="px-5 py-3.5 bg-white border-t border-brand-border flex items-center justify-between gap-3 text-xs">
+    <div class="flex items-center gap-2 text-brand-slate">
+      <span class="material-symbols-outlined text-base text-brand-softBlue">verified</span>
+      <span class="text-[11px] font-medium text-brand-charcoal">Multimodal Skill Extraction &amp; Alignment Active</span>
+    </div>
+    <div class="flex items-center gap-1.5 text-brand-softBlue font-semibold text-[11px]">
+      <span class="">Telemetry Verified</span>
+      <span class="material-symbols-outlined text-sm">check_circle</span>
+    </div>
+  </div>
+</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 3. FEATURES SECTION ==================== -->
+    <section id="features" class="py-20 md:py-28 bg-white border-t border-brand-border">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-grey text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3">
+            Comprehensive Capabilities
+          </div>
+          <h2 class="font-heading text-3xl sm:text-4xl font-bold text-brand-navy tracking-tight mb-4">
+            Everything You Need to Plan Your Career
+          </h2>
+          <p class="text-base sm:text-lg text-brand-slate">
+            Understand where you stand today and what you can improve for tomorrow.
+          </p>
+        </div>
+
+        <!-- 5 Feature Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          
+          <!-- Card 1: Student Profile -->
+          <div class="bg-white rounded-2xl p-7 border border-brand-border shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between group">
+            <div>
+              <div class="w-12 h-12 rounded-xl bg-brand-softBlueLight text-brand-navy flex items-center justify-center mb-6 group-hover:bg-brand-navy group-hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-2xl text-brand-softBlue group-hover:text-white">account_circle</span>
+              </div>
+              <h3 class="font-heading font-bold text-xl text-brand-navy mb-3">
+                Student Profile
+              </h3>
+              <p class="text-sm text-brand-slate leading-relaxed">
+                Bring academic records, skills, projects, certifications, and achievements together in one centralized, multi-dimensional student profile.
+              </p>
+            </div>
+            
+          </div>
+
+          <!-- Card 2: Academic & Attendance Insights -->
+          <div class="bg-white rounded-2xl p-7 border border-brand-border shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between group">
+            <div>
+              <div class="w-12 h-12 rounded-xl bg-brand-softBlueLight text-brand-navy flex items-center justify-center mb-6 group-hover:bg-brand-navy group-hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-2xl text-brand-softBlue group-hover:text-white">analytics</span>
+              </div>
+              <h3 class="font-heading font-bold text-xl text-brand-navy mb-3">
+                Academic &amp; Attendance Insights
+              </h3>
+              <p class="text-sm text-brand-slate leading-relaxed">
+                Understand historical academic performance, track subject-level trends, and monitor attendance patterns to maintain safe eligibility margins.
+              </p>
+            </div>
+            
+          </div>
+
+          <!-- Card 3: Career Recommendations -->
+          <div class="bg-white rounded-2xl p-7 border border-brand-border shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between group">
+            <div>
+              <div class="w-12 h-12 rounded-xl bg-brand-softBlueLight text-brand-navy flex items-center justify-center mb-6 group-hover:bg-brand-navy group-hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-2xl text-brand-softBlue group-hover:text-white">explore</span>
+              </div>
+              <h3 class="font-heading font-bold text-xl text-brand-navy mb-3">
+                Career Recommendations
+              </h3>
+              <p class="text-sm text-brand-slate leading-relaxed">
+                Explore ranked career options based on available academic and technical evidence, matched against modern industry role definitions.
+              </p>
+            </div>
+            
+          </div>
+
+          <!-- Card 4: Skill-Gap Analysis -->
+          <div class="bg-white rounded-2xl p-7 border border-brand-border shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between group">
+            <div>
+              <div class="w-12 h-12 rounded-xl bg-brand-softBlueLight text-brand-navy flex items-center justify-center mb-6 group-hover:bg-brand-navy group-hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-2xl text-brand-softBlue group-hover:text-white">rule</span>
+              </div>
+              <h3 class="font-heading font-bold text-xl text-brand-navy mb-3">
+                Skill-Gap Analysis
+              </h3>
+              <p class="text-sm text-brand-slate leading-relaxed">
+                Compare your current verified skills with specific career path requirements and immediately identify clear technical areas to develop.
+              </p>
+            </div>
+            
+          </div>
+
+          <!-- Card 5: Career Readiness Insights (Spans 2 columns on lg screens for clean layout balance) -->
+          <div class="bg-white rounded-2xl p-7 border border-brand-border shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between group md:col-span-2 lg:col-span-2">
+            <div>
+              <div class="w-12 h-12 rounded-xl bg-brand-softBlueLight text-brand-navy flex items-center justify-center mb-6 group-hover:bg-brand-navy group-hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-2xl text-brand-softBlue group-hover:text-white">psychology_alt</span>
+              </div>
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                <h3 class="font-heading font-bold text-xl text-brand-navy">
+                  Career Readiness Insights
+                </h3>
+                <span class="text-[11px] font-semibold text-brand-softBlue bg-brand-softBlueLight px-2.5 py-1 rounded-full w-fit">
+                  Actionable Development Plan
+                </span>
+              </div>
+              <p class="text-sm text-brand-slate leading-relaxed max-w-2xl">
+                Review relevant strengths and improvement priorities using available academic and technical information. Receive targeted suggestions for next-semester electives, capstone project domains, and relevant certifications.
+              </p>
+            </div>
+        
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== 4. HOW IT WORKS SECTION ==================== -->
+    <section id="how-it-works" class="py-20 md:py-28 bg-brand-grey/50 border-t border-brand-border">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-brand-border text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3">
+            System Workflow
+          </div>
+          <h2 class="font-heading text-3xl sm:text-4xl font-bold text-brand-navy tracking-tight mb-4">
+            Your Journey from Student Data to Career Insights
+          </h2>
+          <p class="text-base sm:text-lg text-brand-slate">
+            Four transparent steps transforming raw academic and skill records into clear career orientation.
+          </p>
+        </div>
+
+        <!-- Timeline Steps (Horizontal on Desktop, Vertical on Mobile) -->
+        <div class="relative">
+          
+          <!-- Connecting Line (Desktop) -->
+          <div class="hidden lg:block absolute top-12 left-12 right-12 h-0.5 bg-brand-border z-0"></div>
+
+          <!-- Connecting Line (Mobile Vertical) -->
+          <div class="lg:hidden absolute top-8 bottom-8 left-8 w-0.5 bg-brand-border z-0"></div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 relative z-10">
+            
+            <!-- Step 1 -->
+            <div class="flex flex-row lg:flex-col items-start gap-5 bg-white lg:bg-transparent p-6 lg:p-0 rounded-2xl border border-brand-border lg:border-0 shadow-subtle lg:shadow-none">
+              <!-- Number & Icon Indicator -->
+              <div class="w-14 h-14 rounded-2xl bg-brand-navy text-white flex flex-col items-center justify-center shrink-0 shadow-card">
+                <span class="text-[10px] font-bold text-brand-softBlue leading-none mb-0.5">01</span>
+                <span class="material-symbols-outlined text-xl">folder_shared</span>
+              </div>
+              <div>
+                <h3 class="font-heading font-bold text-lg text-brand-navy mb-2">
+                  Build Your Profile
+                </h3>
+                <p class="text-sm text-brand-slate leading-relaxed">
+                  Add academic information, attendance records, technical skills, coursework, projects, and certifications.
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="flex flex-row lg:flex-col items-start gap-5 bg-white lg:bg-transparent p-6 lg:p-0 rounded-2xl border border-brand-border lg:border-0 shadow-subtle lg:shadow-none">
+              <div class="w-14 h-14 rounded-2xl bg-white border-2 border-brand-navy text-brand-navy flex flex-col items-center justify-center shrink-0 shadow-card">
+                <span class="text-[10px] font-bold text-brand-softBlue leading-none mb-0.5">02</span>
+                <span class="material-symbols-outlined text-xl">query_stats</span>
+              </div>
+              <div>
+                <h3 class="font-heading font-bold text-lg text-brand-navy mb-2">
+                  Analyze Your Strengths
+                </h3>
+                <p class="text-sm text-brand-slate leading-relaxed">
+                  The system organizes and normalizes available information for pattern extraction and subject-matter strength detection.
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="flex flex-row lg:flex-col items-start gap-5 bg-white lg:bg-transparent p-6 lg:p-0 rounded-2xl border border-brand-border lg:border-0 shadow-subtle lg:shadow-none">
+              <div class="w-14 h-14 rounded-2xl bg-white border-2 border-brand-softBlue text-brand-navy flex flex-col items-center justify-center shrink-0 shadow-card">
+                <span class="text-[10px] font-bold text-brand-softBlue leading-none mb-0.5">03</span>
+                <span class="material-symbols-outlined text-xl">hub</span>
+              </div>
+              <div>
+                <h3 class="font-heading font-bold text-lg text-brand-navy mb-2">
+                  Explore Career Matches
+                </h3>
+                <p class="text-sm text-brand-slate leading-relaxed">
+                  The hybrid machine-learning system evaluates suitable career options by benchmarking skills against industry domain models.
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="flex flex-row lg:flex-col items-start gap-5 bg-white lg:bg-transparent p-6 lg:p-0 rounded-2xl border border-brand-border lg:border-0 shadow-subtle lg:shadow-none">
+              <div class="w-14 h-14 rounded-2xl bg-emerald-600 text-white flex flex-col items-center justify-center shrink-0 shadow-card">
+                <span class="text-[10px] font-bold text-emerald-200 leading-none mb-0.5">04</span>
+                <span class="material-symbols-outlined text-xl">verified</span>
+              </div>
+              <div>
+                <h3 class="font-heading font-bold text-lg text-brand-navy mb-2">
+                  Improve Your Skills
+                </h3>
+                <p class="text-sm text-brand-slate leading-relaxed">
+                  Review career-specific skill gaps and actionable improvement priorities to prepare systematically for target professions.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== 7. CALL TO ACTION SECTION ==================== -->
+    <section id="cta" class="py-20 bg-gradient-to-b from-white to-brand-grey border-t border-brand-border">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-brand-navy rounded-3xl p-8 sm:p-14 text-center text-white shadow-float relative overflow-hidden">
+          
+          <!-- Background Glow Elements -->
+          <div class="absolute -top-16 -right-16 w-60 h-60 bg-brand-softBlue/20 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute -bottom-16 -left-16 w-60 h-60 bg-brand-softBlue/20 rounded-full blur-3xl pointer-events-none"></div>
+
+          <div class="relative z-10 max-w-2xl mx-auto">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-brand-softBlue text-xs font-semibold uppercase tracking-wider mb-6 border border-white/10">
+              Get Started Today
+            </div>
+            
+            <h2 class="font-heading text-3xl sm:text-4xl font-bold tracking-tight mb-4">
+              Your Future Starts with Understanding Your Strengths.
+            </h2>
+            
+            <p class="text-base sm:text-lg text-slate-300 leading-relaxed mb-8">
+              Explore your profile, discover potential career paths, and identify the skills you can work on next.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <button class="w-full sm:w-auto px-8 py-3.5 text-base font-semibold text-brand-navy bg-white hover:bg-slate-100 rounded-xl shadow-lg transition-all active:scale-[0.98]">
+               <a href="register.html" class="text-brand-navy">Get Started</a>
+              </button>
+              <a href="#about" class="w-full sm:w-auto px-8 py-3.5 text-base font-semibold text-white hover:text-brand-softBlue border border-white/20 hover:border-white/40 rounded-xl transition-all">
+                Learn More
+              </a>
+            </div>
+
+            <p class="text-xs text-slate-400 mt-6">
+              Instant profile setup • Compatible with university grading scales
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 8. CONTACT / FAQ MODAL STRIP ==================== -->
+    <section id="contact" class="py-12 bg-white border-t border-brand-border">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-6 p-6 rounded-2xl bg-brand-grey border border-brand-border">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-white border border-brand-border flex items-center justify-center text-brand-navy shadow-sm">
+              <span class="material-symbols-outlined text-2xl text-brand-softBlue">contact_support</span>
+            </div>
+            <div>
+              <h4 class="font-heading font-bold text-brand-navy text-base">Have questions regarding the capstone project or evaluation?</h4>
+              <p class="text-xs text-brand-slate">Connect with the project development team or schedule an evaluator demonstration.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 w-full sm:w-auto">
+            <a href="mailto:project-eval@studentpath.ai" class="w-full sm:w-auto text-center px-5 py-2.5 text-xs font-semibold text-white bg-brand-navy hover:bg-brand-navyLight rounded-lg transition-colors">
+              Contact Project Team
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== 9. FOOTER ==================== -->
+  <footer class="bg-white border-t border-brand-border pt-16 pb-12 text-sm text-brand-slate">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-12">
+        
+        <!-- Brand Info -->
+        <div class="md:col-span-5">
+          <a href="#home" class="flex items-center gap-2.5 mb-4">
+            <div class="w-8 h-8 rounded-lg bg-brand-navy flex items-center justify-center text-white">
+              <span class="material-symbols-outlined text-lg text-brand-softBlue">school</span>
+            </div>
+            <span class="font-heading font-bold text-lg text-brand-navy">
+              StudentPath
+            </span>
+          </a>
+          <p class="text-xs text-brand-slate leading-relaxed max-w-sm mb-4">
+             Student Profiling &amp; Career Recommendation System. Synthesizing academic performance, verified competencies, and evidence-based career alignment for higher education.
+          </p>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-brand-grey text-brand-navy text-xs font-medium border border-brand-border">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            Final Year Engineering Capstone Presentation Edition
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="md:col-span-3">
+          <h4 class="font-heading font-bold text-xs uppercase tracking-wider text-brand-navy mb-4">
+            Quick Navigation
+          </h4>
+          <ul class="space-y-2.5 text-xs">
+            <li class=""><a href="#home" class="hover:text-brand-navy transition-colors">Home</a></li>
+            <li class=""><a href="#features" class="hover:text-brand-navy transition-colors">System Features</a></li>
+            <li class=""><a href="#how-it-works" class="hover:text-brand-navy transition-colors">How It Works</a></li>
+            <li class=""><a href="#contact" class="hover:text-brand-navy transition-colors">Contact Evaluator Support</a></li>
+          </ul>
+        </div>
+
+        <!-- System Architecture Reference -->
+        <div class="md:col-span-4">
+          <h4 class="font-heading font-bold text-xs uppercase tracking-wider text-brand-navy mb-4">
+            Project Architecture
+          </h4>
+          <ul class="space-y-2 text-xs text-brand-slate">
+            <li class="flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-softBlue"></span>
+              Frontend: Responsive React &amp; Tailwind CSS Architecture
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-softBlue"></span>
+              Machine Learning: XGBoost, Random Forest &amp; Cosine Sim
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-softBlue"></span>
+              Privacy: FERPA-compliant Student Telemetry &amp; Safeguards
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-softBlue"></span>
+              Evaluation: Major Project Defense &amp; Review 2026
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Academic Guidance Note -->
+      <div class="pt-8 border-t border-brand-border text-center">
+        <p class="text-xs text-brand-slate mb-3 max-w-3xl mx-auto leading-relaxed">
+          <strong>Academic project notice:</strong> Career insights and skill-gap recommendations are intended to support, not replace, personal judgment, faculty mentorship, and qualified professional career guidance.
+        </p>
+        <p class="text-xs text-brand-slate/80">
+          © 2026 StudentPath  Student Profiling &amp; Career Recommendation System. All rights reserved.
+        </p>
+      </div>
+
+    </div>
+  </footer
+
+  <!-- Script for Mobile Menu Toggle and Smooth Navigation -->
+  <script>
+    (function initNav() {
+      const btn = document.getElementById('mobile-menu-btn');
+      const menu = document.getElementById('mobile-menu');
+      const icon = document.getElementById('menu-icon');
+
+      if (btn && menu) {
+        btn.addEventListener('click', () => {
+          const isOpen = !menu.classList.contains('hidden');
+          if (isOpen) {
+            menu.classList.add('hidden');
+            if (icon) icon.textContent = 'menu';
+          } else {
+            menu.classList.remove('hidden');
+            if (icon) icon.textContent = 'close';
+          }
+        });
+
+        // Close menu on link click
+        menu.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', () => {
+            menu.classList.add('hidden');
+            if (icon) icon.textContent = 'menu';
+          });
+        });
+      }
+    })();
+  </script>
+
+
+
+</body></html>
