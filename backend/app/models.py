@@ -37,6 +37,7 @@ class Student(Base):
     student_name: Mapped[str] = mapped_column(String(100), nullable=False)
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
     roll_number: Mapped[str] = mapped_column(String(30), unique=True, index=True, nullable=False)
+    prn: Mapped[str | None] = mapped_column(String(30),unique=True, index=True, nullable=True,)
     branch: Mapped[str] = mapped_column(String(100), nullable=False)
     academic_year: Mapped[int] = mapped_column(Integer, nullable=False)
     cgpa: Mapped[float] = mapped_column(Float, nullable=False)
@@ -255,3 +256,221 @@ class ImportJob(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
+class MarkPrediction(Base):
+    __tablename__ = "mark_predictions"
+
+    __table_args__ = (
+        UniqueConstraint(
+            "import_job_id",
+            "student_id",
+            "subject_code",
+            "predicted_semester",
+            name="uq_mark_prediction_import_student_subject_semester",
+        ),
+        Index(
+            "ix_mark_predictions_student",
+            "student_id",
+        ),
+        Index(
+            "ix_mark_predictions_import_job",
+            "import_job_id",
+        ),
+    )
+
+    prediction_id: Mapped[int] = mapped_column(
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+    )
+
+    import_job_id: Mapped[int] = mapped_column(
+        ForeignKey(
+            "import_jobs.import_job_id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+        index=True,
+    )
+
+    student_id: Mapped[int] = mapped_column(
+        ForeignKey(
+            "students.student_id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+        index=True,
+    )
+
+    masked_id: Mapped[str] = mapped_column(
+        String(100),
+        nullable=False,
+        index=True,
+    )
+
+    branch: Mapped[str] = mapped_column(
+        String(100),
+        nullable=False,
+    )
+
+    previous_semester: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+    )
+
+    predicted_semester: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+    )
+
+    subject_code: Mapped[str] = mapped_column(
+        String(50),
+        nullable=False,
+    )
+
+    subject_name: Mapped[str] = mapped_column(
+        String(200),
+        nullable=False,
+    )
+
+    max_marks: Mapped[float] = mapped_column(
+        Float,
+        nullable=False,
+    )
+
+    min_marks: Mapped[float | None] = mapped_column(
+        Float,
+        nullable=True,
+    )
+
+    predicted_percentage: Mapped[float] = mapped_column(
+        Float,
+        nullable=False,
+    )
+
+    predicted_marks: Mapped[float | None] = mapped_column(
+        Float,
+        nullable=True,
+    )
+
+    predicted_rf_percentage: Mapped[float | None] = mapped_column(
+        Float,
+        nullable=True,
+    )
+
+    predicted_xgboost_percentage: Mapped[float | None] = mapped_column(
+        Float,
+        nullable=True,
+    )
+
+    prediction_status: Mapped[str] = mapped_column(
+        String(30),
+        nullable=False,
+    )
+
+    code_seen_in_branch_training: Mapped[bool | None] = mapped_column(
+        Boolean,
+        nullable=True,
+    )
+
+    confidence_note: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
+
+    max_marks_status: Mapped[str | None] = mapped_column(
+        String(50),
+        nullable=True,
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
+
+
+class SGPIPrediction(Base):
+    __tablename__ = "sgpi_predictions"
+
+    __table_args__ = (
+        UniqueConstraint(
+            "import_job_id",
+            "student_id",
+            "predicted_semester",
+            name="uq_sgpi_prediction_import_student_semester",
+        ),
+        Index(
+            "ix_sgpi_predictions_student",
+            "student_id",
+        ),
+        Index(
+            "ix_sgpi_predictions_import_job",
+            "import_job_id",
+        ),
+    )
+
+    sgpi_prediction_id: Mapped[int] = mapped_column(
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+    )
+
+    import_job_id: Mapped[int] = mapped_column(
+        ForeignKey(
+            "import_jobs.import_job_id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+        index=True,
+    )
+
+    student_id: Mapped[int] = mapped_column(
+        ForeignKey(
+            "students.student_id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+        index=True,
+    )
+
+    masked_id: Mapped[str] = mapped_column(
+        String(100),
+        nullable=False,
+        index=True,
+    )
+
+    branch: Mapped[str] = mapped_column(
+        String(100),
+        nullable=False,
+    )
+
+    previous_semester: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+    )
+
+    predicted_semester: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+    )
+
+    previous_sgpi: Mapped[float | None] = mapped_column(
+        Float,
+        nullable=True,
+    )
+
+    predicted_sgpi: Mapped[float] = mapped_column(
+        Float,
+        nullable=False,
+    )
+
+    prediction_method: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
