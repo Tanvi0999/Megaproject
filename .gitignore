@@ -3,3 +3,10 @@ dist/
 .env
 .env.*
 !.env.example
+
+# ML secret/key
+backend/student_mask.key
+
+# Python cache
+__pycache__/
+*.pyc

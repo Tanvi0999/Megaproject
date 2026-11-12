@@ -22,6 +22,7 @@ from app.api.v1.auth import router as auth_router
 from app.api.v1.endpoints.students import router as students_router
 from app.api.v1.endpoints.recommendations import router as recommendations_router
 from app.api.v1.endpoints.attendance import router as attendance_router
+from app.api.v1.endpoints.mark_prediction import router as mark_prediction_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -51,6 +52,7 @@ app.include_router(auth_router)
 app.include_router(students_router)
 app.include_router(recommendations_router)
 app.include_router(attendance_router, tags=["Attendance"])
+app.include_router(mark_prediction_router)
 
 @app.get("/", tags=["Health"])
 def home():
@@ -206,6 +208,7 @@ app.include_router(auth_router)
 app.include_router(students_router)
 app.include_router(recommendations_router)
 app.include_router(attendance_router, tags=["Attendance"])
+app.include_router(mark_prediction_router)
 
 @app.get("/", tags=["Health"])
 def home():
