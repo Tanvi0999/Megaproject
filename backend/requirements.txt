@@ -28,3 +28,4 @@ joblib
 xgboost
 PyJWT==2.8.0
 python-multipart
+openpyxl
